@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 
 INPUT_FILE = "EW_Religion_Sex_Age_Ethnic_group.csv"
 OUTPUT_FILE = "21087019.png"
+FIG_WIDTH = 16
+FIG_LENGTH = 25
 DATA: pd.DataFrame
 
 
@@ -60,15 +62,39 @@ def draw_ethnicity_piechart(ax: plt.Axes):
     ax.set_title('Distribution by Ethnic Group', fontsize=20)
 
 
+def draw_description_box(txt: str, ax: plt.Axes, ha: str = 'left'):
+    bb = ax.get_tightbbox()
+    props = dict(boxstyle='round', facecolor='wheat', alpha=0.5, pad=0.75)
+    mtext = ax.text(0.01, 0.5, txt, wrap=True, va='center', color='gray',
+                    bbox=props, ha=ha, fontsize=18, fontweight='bold')
+    mtext._get_wrap_line_width = lambda: (abs(bb.x0-bb.x1)*72*2/300)
+
+    # make the ticks and spines go away
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['bottom'].set_visible(False)
+    ax.spines['left'].set_visible(False)
+    ax.tick_params(top=False, bottom=False, left=False,
+                   right=False, labelleft=False, labelbottom=False)
+
+
 def main():
     read_data()
-    fig = plt.figure(figsize=(16, 25))
-    fig.set_facecolor('lightblue')
-    gs = fig.add_gridspec(nrows=25, ncols=16, wspace=2, hspace=1)
+    fig = plt.figure(figsize=(FIG_WIDTH, FIG_LENGTH), dpi=300)
+    gs = fig.add_gridspec(
+        nrows=FIG_LENGTH, ncols=FIG_WIDTH, wspace=2, hspace=1)
     draw_heading(plt.subplot(gs[:2, :]))
-    draw_age_barchart(plt.subplot(gs[2:5, :]))
-    draw_religion_piechart(plt.subplot(gs[6:10, :8]))
-    draw_ethnicity_piechart(plt.subplot(gs[6:10, 8:]))
+
+    lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sed magna vel est euismod auctor.'
+
+    draw_description_box(lorem, plt.subplot(gs[2, :]))
+    draw_age_barchart(plt.subplot(gs[3:8, :]))
+
+    draw_religion_piechart(plt.subplot(gs[9:14, :10]))
+    draw_description_box(lorem, plt.subplot(gs[9:14, 10:]))
+
+    draw_description_box(lorem, plt.subplot(gs[15:20, :6]))
+    draw_ethnicity_piechart(plt.subplot(gs[15:20, 6:]))
     fig.savefig(OUTPUT_FILE, dpi=300)
 
 
