@@ -3,9 +3,9 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 INPUT_FILE = "EW_Religion_Sex_Age_Ethnic_group.csv"
-OUTPUT_FILE = "21087019.png"
+OUTPUT_FILE = "dashboard.png"
 FIG_WIDTH = 16
-FIG_LENGTH = 25
+FIG_LENGTH = 28
 DATA: pd.DataFrame
 
 
@@ -85,13 +85,31 @@ def draw_description_box(txt: str, ax: plt.Axes, ha: str = 'left'):
                    right=False, labelleft=False, labelbottom=False)
 
 
+def draw_religion_histplot(ax: plt.Axes):
+    df = DATA.groupby(['Religion', 'Age Code'], as_index=False)[
+        'Observation'].sum()
+    # df[df['Observation'].isin(['Christian', 'Muslim', 'Hindu', 'Sikh'])]
+    df = df[df['Observation'] > 0]
+    df['NormAgeFreq'] = df['Observation'] / \
+        df.groupby('Religion')['Observation'].transform('sum')
+
+    # Create histogram using Seaborn
+    sns.histplot(data=df, x='Age Code', hue='Religion',
+                 weights='NormAgeFreq', kde=False, ax=ax)
+
+    # Add title and axis labels
+    plt.title('Age distribution among different religions')
+    plt.xlabel('Age')
+    plt.ylabel('Frequency')
+
+
 def main():
     read_data()
     plt.rcParams['font.family'] = ['DejaVu Sans', 'Helvetica', 'Arial']
     fig = plt.figure(figsize=(FIG_WIDTH, FIG_LENGTH), dpi=300)
     gs = fig.add_gridspec(
         nrows=FIG_LENGTH, ncols=FIG_WIDTH, wspace=2, hspace=1)
-    
+
     draw_heading(plt.subplot(gs[:2, :]))
 
     description = 'England and wales age distribution barplot is narrower in the beginning indicating a falling birth-rate. ' +\
@@ -109,6 +127,11 @@ def main():
         'followed by Asian ethnicities(9.3%) and Black ethnicities(4%)'
     draw_description_box(description, plt.subplot(gs[16:21, :6]))
     draw_ethnicity_piechart(plt.subplot(gs[16:21, 6:]))
+
+    draw_religion_histplot(plt.subplot(gs[21:25, :]))
+    description = 'Christians are an aging population. Other religions have more younger people hence their percentage is likely to rise in the future.'
+    draw_description_box(description, plt.subplot(gs[25:28, :]))
+
     fig.savefig(OUTPUT_FILE)
 
 
