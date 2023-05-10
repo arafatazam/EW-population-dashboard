@@ -29,7 +29,7 @@ def draw_heading(ax: plt.Axes):
 def draw_age_barchart(ax: plt.Axes):
     df = DATA.groupby('Age Code', as_index=False)['Observation'].sum()
     sns.barplot(x='Age Code', y='Observation', data=df, ax=ax)
-
+    ax.set_title('Age Distribution', fontsize=20)
     # Set labels for x and y axes
     ax.set_xlabel('Age', fontsize=20)
     ax.set_ylabel('Observation', fontsize=20)
@@ -97,8 +97,8 @@ def main():
     description = 'England and wales age distribution barplot is narrower in the beginning indicating a falling birth-rate. ' +\
         'Then there are higher bars in the working age portion 16-64 which indicates an aging population and the effect of ' +\
         'net migration'
-    draw_description_box(description, plt.subplot(gs[2, :]))
-    draw_age_barchart(plt.subplot(gs[4:9, :]))
+    draw_age_barchart(plt.subplot(gs[2:7, :]))
+    draw_description_box(description, plt.subplot(gs[8, :]))
 
     description = 'Christianity(46.2%) is the largest religion in England & Wales, ' +\
         'followed by no religion(37.2%). Islam(6.5%) is the second largest among those who follows religion.'
