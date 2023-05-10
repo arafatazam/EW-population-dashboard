@@ -17,6 +17,11 @@ def read_data():
 def draw_heading(ax: plt.Axes):
     ax.text(0.5, 0.5, "England & Wales Census 2021: Religion, Ethnicity and Age",
             fontsize=30, ha="center", va="center")
+    # make the ticks and spines go away
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['bottom'].set_visible(False)
+    ax.spines['left'].set_visible(False)
     ax.tick_params(top=False, bottom=False, left=False,
                    right=False, labelleft=False, labelbottom=False)
 
@@ -86,23 +91,24 @@ def main():
     fig = plt.figure(figsize=(FIG_WIDTH, FIG_LENGTH), dpi=300)
     gs = fig.add_gridspec(
         nrows=FIG_LENGTH, ncols=FIG_WIDTH, wspace=2, hspace=1)
+    
     draw_heading(plt.subplot(gs[:2, :]))
 
     description = 'England and wales age distribution barplot is narrower in the beginning indicating a falling birth-rate. ' +\
         'Then there are higher bars in the working age portion 16-64 which indicates an aging population and the effect of ' +\
         'net migration'
     draw_description_box(description, plt.subplot(gs[2, :]))
-    draw_age_barchart(plt.subplot(gs[3:8, :]))
+    draw_age_barchart(plt.subplot(gs[4:9, :]))
 
     description = 'Christianity(46.2%) is the largest religion in England & Wales, ' +\
         'followed by no religion(37.2%). Islam(6.5%) is the second largest among those who follows religion.'
-    draw_religion_piechart(plt.subplot(gs[9:14, :10]))
-    draw_description_box(description, plt.subplot(gs[9:14, 10:]))
+    draw_religion_piechart(plt.subplot(gs[10:15, :10]))
+    draw_description_box(description, plt.subplot(gs[10:15, 10:]))
 
     description = 'England & Wales is a ethnically diverse place. White ethnicities(81.7%) are the largest ethnic group,' +\
         'followed by Asian ethnicities(9.3%) and Black ethnicities(4%)'
-    draw_description_box(description, plt.subplot(gs[15:20, :6]))
-    draw_ethnicity_piechart(plt.subplot(gs[15:20, 6:]))
+    draw_description_box(description, plt.subplot(gs[16:21, :6]))
+    draw_ethnicity_piechart(plt.subplot(gs[16:21, 6:]))
     fig.savefig(OUTPUT_FILE)
 
 
